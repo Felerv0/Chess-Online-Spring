@@ -12,18 +12,22 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "nickname")
+    @Column(name = "nickname", nullable = false, unique = true)
     private String nickname;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "country")
-    private String country;
+    @ManyToOne
+    @JoinColumn(name = "country_id")
+    private Country country;
+
+    @Column(name = "password", nullable = false)
+    private String password;
 }
