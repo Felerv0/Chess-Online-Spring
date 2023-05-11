@@ -1,10 +1,13 @@
 package com.samsung.chess_online.controller;
 
 import com.samsung.chess_online.domain.User;
+import com.samsung.chess_online.exception.UserAlreadyExistsException;
+import com.samsung.chess_online.exception.UserNotFoundException;
 import com.samsung.chess_online.services.UserService;
 import com.samsung.chess_online.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,5 +44,10 @@ public class UserController {
     @DeleteMapping("/user/{id}")
     public void deleteById(@PathVariable long id) {
         userService.deleteById(id);
+    }
+
+    @ExceptionHandler({UserAlreadyExistsException.class, UserNotFoundException.class})
+    public ResponseEntity<String> handlerUserException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

@@ -1,12 +1,15 @@
 package com.samsung.chess_online.services.impl;
 
 import com.samsung.chess_online.domain.User;
+import com.samsung.chess_online.exception.UserAlreadyExistsException;
+import com.samsung.chess_online.exception.UserNotFoundException;
 import com.samsung.chess_online.repository.UserRepository;
 import com.samsung.chess_online.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,9 +26,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional()
     public User add(User user) {
         // encrypt password
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        if (repository.findByEmail(user.getEmail()).isPresent())
+            throw new UserAlreadyExistsException("user with email: " + user.getEmail() + " already exists");
         return repository.save(user);
     }
 
@@ -48,5 +54,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(long id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findByEmail(String email) {
+        return repository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("user with email " + email + " was not found"));
     }
 }

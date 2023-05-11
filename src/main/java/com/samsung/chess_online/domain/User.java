@@ -21,13 +21,16 @@ public class User {
     @Column(name = "nickname", nullable = false, unique = true)
     private String nickname;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "country_id")
-    private Country country;
-
     @Column(name = "password", nullable = false)
     private String password;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "country_id")
+    private Country country;
 }
