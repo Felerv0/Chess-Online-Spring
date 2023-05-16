@@ -1,11 +1,10 @@
 package com.samsung.chess_online.domain;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Data
 @Builder
@@ -18,11 +17,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "nickname", nullable = false, unique = true)
-    private String nickname;
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "fullname")
+    private String fullname;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
@@ -32,5 +31,5 @@ public class User {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "country_id")
-    private Country country;
+    private Country country_id;
 }

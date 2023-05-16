@@ -1,3 +1,5 @@
+server:
+  port: 8080
 spring:
 
   # Подключение к H2 бд через jdbc

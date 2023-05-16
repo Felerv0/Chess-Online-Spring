@@ -7,29 +7,24 @@ import com.samsung.chess_online.repository.UserRepository;
 import com.samsung.chess_online.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.repository = userRepository;
-        this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional()
     public User add(User user) {
         // encrypt password
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (repository.findByEmail(user.getEmail()).isPresent())
             throw new UserAlreadyExistsException("user with email: " + user.getEmail() + " already exists");
         return repository.save(user);
@@ -42,12 +37,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(long id) {
-        return repository.findById(id).orElse(new User());
+        return repository.findById(id).orElseThrow(() -> new UserNotFoundException("user with id '" + id + "' doesn't exist"));
+    }
+
+    @Override
+    public User getByUsername(String username) {
+        return repository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("user with username '" + username + "' doesn't exist"));
     }
 
     @Override
     public User update(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return repository.save(user);
     }
 
@@ -59,6 +59,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User findByEmail(String email) {
-        return repository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("user with email " + email + " was not found"));
+        return repository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("user with email " + email + " doesn't exist"));
     }
 }
