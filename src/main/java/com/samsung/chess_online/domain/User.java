@@ -29,7 +29,6 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "country_id")
-    private Country country_id;
+    @Column(name = "country_id", nullable = true)
+    private long country_id;
 }

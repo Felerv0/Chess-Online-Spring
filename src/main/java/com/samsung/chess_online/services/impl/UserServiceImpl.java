@@ -36,11 +36,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getById(long id) {
         return repository.findById(id).orElseThrow(() -> new UserNotFoundException("user with id '" + id + "' doesn't exist"));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getByUsername(String username) {
         return repository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("user with username '" + username + "' doesn't exist"));
     }
@@ -52,8 +54,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(long id) {
-        repository.deleteById(id);
+    public void deleteByUsername(String username) {
+        repository.deleteByUsername(username);
     }
 
     @Override
