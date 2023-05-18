@@ -16,8 +16,10 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder(10);
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        return http.csrf().disable().authorizeHttpRequests().anyRequest().authenticated().and().httpBasic(Customizer.withDefaults()).build();
-//    }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http.csrf().disable().authorizeHttpRequests().requestMatchers(HttpMethod.POST, "/user")
+                .permitAll().requestMatchers(HttpMethod.GET, "/user").permitAll().
+                requestMatchers(HttpMethod.GET, "/user/{username}").permitAll().and().build();
+    }
 }

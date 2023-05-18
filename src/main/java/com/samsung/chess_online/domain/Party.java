@@ -25,7 +25,4 @@ public class Party {
     @ManyToOne
     @JoinColumn(name = "user2_id")
     private User user2;
-
-    @Column(name = "game")
-    private Game game;
 }
