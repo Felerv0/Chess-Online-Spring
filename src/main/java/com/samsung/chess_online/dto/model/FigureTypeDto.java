@@ -6,5 +6,5 @@ public enum FigureTypeDto {
     KNIGHT,
     PAWN,
     QUEEN,
-    ROCK;
+    ROOK;
 }

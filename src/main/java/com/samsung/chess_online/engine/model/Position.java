@@ -37,7 +37,7 @@ public class Position {
     }
 
     public String parseString() {
-        return String.valueOf(LETTERS.charAt(x)) + y;
+        return String.valueOf(LETTERS.charAt(x - 1)) + y;
     }
 
 

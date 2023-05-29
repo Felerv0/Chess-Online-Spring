@@ -1,5 +1,6 @@
 package com.samsung.chess_online.domain;
 
+import com.samsung.chess_online.dto.GameDto;
 import com.samsung.chess_online.engine.Game;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -25,7 +25,7 @@ public class FigureMove {
         FigureType promotion = (moveDto.getPromotion() != null && !moveDto.getPromotion().isEmpty())
                 ? FigureType.valueOf(moveDto.getPromotion().toUpperCase())
                 : null;
-        return  new FigureMove(Position.of(moveDto.getFrom()), Position.of(moveDto.getTo()), promotion);
+        return new FigureMove(Position.of(moveDto.getFrom()), Position.of(moveDto.getTo()), promotion);
     }
 
     public MoveDto toDto() {

@@ -49,14 +49,14 @@ public class Game {
     public List<FigureDto> calculateFigureDtos(boolean withValidMoves) {
         return board.figures()
                 .stream()
-                .map(p -> {
+                .map(figure -> {
                     FigureDto figureDto = new FigureDto();
-                    figureDto.setFigureType(FigureTypeDto.valueOf(p.getType().name()));
-                    figureDto.setPosition(p.getPosition().parseString());
-                    figureDto.setColor(p.getColor().toDto());
+                    figureDto.setFigureType(FigureTypeDto.valueOf(figure.getType().name()));
+                    figureDto.setPosition(figure.getPosition().parseString());
+                    figureDto.setColor(figure.getColor().toDto());
                     if(withValidMoves) {
-                        if (validMovesForCurrentPlayer.containsKey(p.getPosition())) {
-                            figureDto.setValidMoves(validMovesForCurrentPlayer.get(p.getPosition()).stream()
+                        if (validMovesForCurrentPlayer.containsKey(figure.getPosition())) {
+                            figureDto.setValidMoves(validMovesForCurrentPlayer.get(figure.getPosition()).stream()
                                     .map(Position::parseString).collect(Collectors.toList()));
                         }
                     }
@@ -131,7 +131,7 @@ public class Game {
 
         Set<Position> attackPositions =
                 board.figures(player.change()).stream()
-                        .flatMap(p -> p.possibleFigureMoves(this).stream())
+                        .flatMap(p -> p.validFigureMoves(this).stream())
                         .collect(Collectors.toSet());
 
         return attackPositions.contains(board.king(player));
