@@ -27,7 +27,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable().authorizeHttpRequests().requestMatchers(HttpMethod.POST, "/user").permitAll()
-                .requestMatchers(HttpMethod.GET, "/user/{username}").access(new WebExpressionAuthorizationManager("#username == authentication.name"))
+                .requestMatchers(HttpMethod.GET, "/user/{username}").authenticated()//.access(new WebExpressionAuthorizationManager("#username == authentication.name"))
                 //.requestMatchers(HttpMethod.GET, "/user").denyAll()
                 .requestMatchers(HttpMethod.GET, "/api/{username}/matches").access(new WebExpressionAuthorizationManager("#username == authentication.name"))
                 .anyRequest().authenticated().and().httpBasic(Customizer.withDefaults()).logout().and().build();

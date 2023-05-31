@@ -34,6 +34,9 @@ public class GameDto {
         boolean forCurrentPlayer = currentPlayerUsername().equals(username);
 
         GameStateDto gameStateDto = new GameStateDto();
+        gameStateDto.setUser1(player1);
+        gameStateDto.setUser2(player2);
+        gameStateDto.setId(id);
         gameStateDto.setMyTurn(forCurrentPlayer);
         gameStateDto.setCurrentPlayer(game.getCurrentPlayer().toDto());
 

@@ -50,16 +50,15 @@ public class GameController {
 
     @GetMapping("/{username}/matches")
     public List<GameStateDto> getGames(@PathVariable("username") String username) {
-        gameService.newGame("user", "user3");
         List<GameDto> list = gameService.findByUsername(username);
         List<GameStateDto> list1 = new ArrayList<>();
         for (GameDto gameDto : list) {
             list1.add(gameDto.getGameStateDtoForPlayer("user"));
         }
-        return new ArrayList<GameStateDto>();
+        return list1;
     }
 
-    @PostMapping("/{id}/accept")
+    @GetMapping("/{id}/accept")
     public void accept(@PathVariable("id") long id) {
         GameDto gameDto = gameService.find(id);
         if (gameDto.isPlayerParty(((SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()))
@@ -70,20 +69,23 @@ public class GameController {
     public GameStateDto move(@PathVariable("id") long id, @RequestBody MoveDto moveDto) {
         GameDto gameDto = gameService.find(id);
         String username = ((SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        if (gameDto.isPlayerParty(username))
-            gameService.acceptGame(id);
-        GameDto gameDtoAfterMove = gameService.applyMove(id, moveDto);
-        return gameDtoAfterMove.getGameStateDtoForPlayer(username);
+        if (gameDto.isPlayerParty(username)) {
+            GameDto gameDtoAfterMove = gameService.applyMove(id, moveDto);
+            return gameDtoAfterMove.getGameStateDtoForPlayer(username);
+        }
+        return null;
     }
 
-    @PostMapping("/invite/{username}")
-    public void invite(@PathVariable("username") String username) {
+    @GetMapping("/invite/{username}")
+    public GameStateDto invite(@PathVariable("username") String username) {
         log.debug(username);
         if (!username.equals(((SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername())) {
             GameDto gameDto = gameService.newGame(
                     ((SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername(),
                     username);
+            return gameDto.getGameStateDtoForPlayer(((SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         }
+        return null;
     }
 
     @GetMapping("/all")
