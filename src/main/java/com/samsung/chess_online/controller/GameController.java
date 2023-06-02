@@ -58,6 +58,16 @@ public class GameController {
         return list1;
     }
 
+    @GetMapping("/{id}/get")
+    public GameStateDto getGame(@PathVariable("id") long id) {
+        GameDto gameDto = gameService.find(id);
+        String username = ((SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        if (gameDto.isPlayerParty(username)) {
+            return gameDto.getGameStateDtoForPlayer(username);
+        }
+        return null;
+    }
+
     @GetMapping("/{id}/accept")
     public void accept(@PathVariable("id") long id) {
         GameDto gameDto = gameService.find(id);
