@@ -89,11 +89,21 @@ public class GameController {
     @GetMapping("/invite/{username}")
     public GameStateDto invite(@PathVariable("username") String username) {
         log.debug(username);
-        if (!username.equals(((SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername())) {
-            GameDto gameDto = gameService.newGame(
-                    ((SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername(),
-                    username);
-            return gameDto.getGameStateDtoForPlayer(((SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+        String my_username = ((SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        if (!username.equals(my_username)) {
+            boolean flag = true;
+            List<GameDto> list = gameService.findByUsername(username);
+            for (GameDto gameDto : list) {
+                if (gameDto.isPlayerParty(username) && gameDto.isPlayerParty(my_username)) {
+                    flag = false;
+                }
+            }
+            if (flag) {
+                GameDto gameDto = gameService.newGame(
+                        my_username,
+                        username);
+                return gameDto.getGameStateDtoForPlayer(my_username);
+            }
         }
         return null;
     }
